@@ -663,7 +663,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       loadingController: _loadingController,
       inertiaController: _postSwitchAuthController,
       inertiaDirection: TextFieldInertiaDirection.right,
-      autofillHints: AutofillHints.newPassword,
+      autofillHints: [AutofillHints.newPassword],
       labelText: messages.confirmPasswordHint,
       controller: _confirmPassController,
       textInputAction: TextInputAction.done,

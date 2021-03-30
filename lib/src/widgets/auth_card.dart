@@ -373,6 +373,8 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
   TextEditingController _nameController;
   TextEditingController _passController;
   TextEditingController _confirmPassController;
+  TextEditingController _firstNameController;
+  TextEditingController _familyNameController;
 
   var _isLoading = false;
   var _isSubmitting = false;

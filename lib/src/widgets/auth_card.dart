@@ -399,6 +399,8 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     super.initState();
 
     final auth = Provider.of<Auth>(context, listen: false);
+    _firstNameController = TextEditingController(text: auth.firstName);
+    _familyNameController = TextEditingController(text: auth.familyName);
     _nameController = TextEditingController(text: auth.email);
     _passController = TextEditingController(text: auth.password);
     _confirmPassController = TextEditingController(text: auth.confirmPassword);
@@ -578,7 +580,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       loadingController: _loadingController,
       interval: _nameTextFieldLoadingAnimationInterval,
       labelText: messages.usernameHint,
-      autofillHints: [AutofillHints.username],
+      autofillHints: auth.isLogin ? [AutofillHints.username] : [AutofillHints.email],
       prefixIcon: Icon(FontAwesomeIcons.solidUserCircle),
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
@@ -587,6 +589,42 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       },
       validator: widget.emailValidator,
       onSaved: (value) => auth.email = value,
+    );
+  }
+
+  Widget _buildFirstNameField(double width, LoginMessages messages, Auth auth) {
+    return AnimatedTextFormField(
+      controller: _firstNameController,
+      width: width,
+      loadingController: _loadingController,
+      interval: _nameTextFieldLoadingAnimationInterval,
+      labelText: messages.firstNameHint,
+      autofillHints: [AutofillHints.givenName],
+      prefixIcon: Icon(FontAwesomeIcons.solidUserCircle),
+      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        FocusScope.of(context).requestFocus(_passwordFocusNode);
+      },
+      onSaved: (value) => auth.firstName = value,
+    );
+  }
+
+  Widget _buildFamilyNameField(double width, LoginMessages messages, Auth auth) {
+    return AnimatedTextFormField(
+      controller: _familyNameController,
+      width: width,
+      loadingController: _loadingController,
+      interval: _nameTextFieldLoadingAnimationInterval,
+      labelText: messages.familyNameHint,
+      autofillHints: [AutofillHints.familyName],
+      prefixIcon: Icon(FontAwesomeIcons.solidUserCircle),
+      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        FocusScope.of(context).requestFocus(_passwordFocusNode);
+      },
+      onSaved: (value) => auth.familyName = value,
     );
   }
 
@@ -623,6 +661,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       loadingController: _loadingController,
       inertiaController: _postSwitchAuthController,
       inertiaDirection: TextFieldInertiaDirection.right,
+      autofillHints: AutofillHints.newPassword,
       labelText: messages.confirmPasswordHint,
       controller: _confirmPassController,
       textInputAction: TextInputAction.done,
@@ -735,63 +774,71 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     final textFieldWidth = cardWidth - cardPadding * 2;
     final authForm = Form(
       key: _formKey,
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.only(
-              left: cardPadding,
-              right: cardPadding,
-              top: cardPadding + 10,
-            ),
-            width: cardWidth,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _buildNameField(textFieldWidth, messages, auth),
-                SizedBox(height: 20),
-                _buildPasswordField(textFieldWidth, messages, auth),
-                SizedBox(height: 10),
-              ],
-            ),
+      child: AutofillGroup(
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(
+                  left: cardPadding,
+                  right: cardPadding,
+                  top: cardPadding + 10,
+                ),
+                width: cardWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _buildNameField(textFieldWidth, messages, auth),
+                    SizedBox(height: 20),
+                    _buildPasswordField(textFieldWidth, messages, auth),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              ),
+              ExpandableContainer(
+                backgroundColor: theme.accentColor,
+                controller: _switchAuthController,
+                initialState: isLogin
+                    ? ExpandableContainerState.shrunk
+                    : ExpandableContainerState.expanded,
+                alignment: Alignment.topLeft,
+                color: theme.cardTheme.color,
+                width: cardWidth,
+                padding: EdgeInsets.symmetric(
+                  horizontal: cardPadding,
+                  vertical: 10,
+                ),
+                onExpandCompleted: () => _postSwitchAuthController.forward(),
+                child: Column(
+                  children: <Widget>[
+                    _buildConfirmPasswordField(textFieldWidth, messages, auth),
+                    _buildFirstNameField(textFieldWidth, messages, auth),
+                    _buildFamilyNameField(textFieldWidth, messages, auth),
+                  ]
+                )
+              ),
+              Container(
+                padding: Paddings.fromRBL(cardPadding),
+                width: cardWidth,
+                child: Column(
+                  children: <Widget>[
+                    !widget.hideForgotPasswordButton
+                        ? _buildForgotPassword(theme, messages)
+                        : SizedBox.fromSize(
+                      size: Size.fromHeight(16),
+                    ),
+                    _buildSubmitButton(theme, messages, auth),
+                    !widget.hideSignUpButton
+                        ? _buildSwitchAuthButton(theme, messages, auth)
+                        : SizedBox.fromSize(
+                      size: Size.fromHeight(10),
+                    ),
+                    _buildProvidersLogInButton(theme, messages, auth),
+                  ],
+                ),
+              ),
+            ],
           ),
-          ExpandableContainer(
-            backgroundColor: theme.accentColor,
-            controller: _switchAuthController,
-            initialState: isLogin
-                ? ExpandableContainerState.shrunk
-                : ExpandableContainerState.expanded,
-            alignment: Alignment.topLeft,
-            color: theme.cardTheme.color,
-            width: cardWidth,
-            padding: EdgeInsets.symmetric(
-              horizontal: cardPadding,
-              vertical: 10,
-            ),
-            onExpandCompleted: () => _postSwitchAuthController.forward(),
-            child: _buildConfirmPasswordField(textFieldWidth, messages, auth),
-          ),
-          Container(
-            padding: Paddings.fromRBL(cardPadding),
-            width: cardWidth,
-            child: Column(
-              children: <Widget>[
-                !widget.hideForgotPasswordButton
-                    ? _buildForgotPassword(theme, messages)
-                    : SizedBox.fromSize(
-                        size: Size.fromHeight(16),
-                      ),
-                _buildSubmitButton(theme, messages, auth),
-                !widget.hideSignUpButton
-                    ? _buildSwitchAuthButton(theme, messages, auth)
-                    : SizedBox.fromSize(
-                        size: Size.fromHeight(10),
-                      ),
-                _buildProvidersLogInButton(theme, messages, auth),
-              ],
-            ),
-          ),
-        ],
-      ),
+      )
     );
 
     return FittedBox(

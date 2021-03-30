@@ -23,9 +23,14 @@ class Auth with ChangeNotifier {
     String email = '',
     String password = '',
     String confirmPassword = '',
+    String firstName = '',
+    String familyName = ''
   })  : _email = email,
         _password = password,
-        _confirmPassword = confirmPassword;
+        _confirmPassword = confirmPassword,
+        _firstName = firstName,
+        _familyName = familyName
+  ;
 
   final AuthCallback onLogin;
   final AuthCallback onSignup;
@@ -75,6 +80,20 @@ class Auth with ChangeNotifier {
   String get confirmPassword => _confirmPassword;
   set confirmPassword(String confirmPassword) {
     _confirmPassword = confirmPassword;
+    notifyListeners();
+  }
+
+  String _firstName = '';
+  String get firstName => _firstName;
+  set firstName(String firstName) {
+    _firstName = firstName;
+    notifyListeners();
+  }
+
+  String _familyName = '';
+  String get familyName => _familyName;
+  set familyName(String familyName) {
+    _familyName = familyName;
     notifyListeners();
   }
 }

@@ -17,6 +17,8 @@ class LoginMessages with ChangeNotifier {
     this.flushbarTitleError = defaultflushbarTitleError,
     this.flushbarTitleSuccess = defaultflushbarTitleSuccess,
     this.signUpSuccess = defaultSignUpSuccess,
+    this.firstNameHint = defaultFirstNameHint,
+    this.familyNameHint = defaultFamilyNameHint
   });
 
   static const defaultUsernameHint = 'Email';
@@ -35,6 +37,8 @@ class LoginMessages with ChangeNotifier {
   static const defaultflushbarTitleSuccess = 'Success';
   static const defaultflushbarTitleError = 'Error';
   static const defaultSignUpSuccess = 'An activation link has been sent';
+  static const defaultFirstNameHint = 'Name';
+  static const defaultFamilyNameHint = 'Surname';
 
   /// Hint text of the user name [TextField]
   final String usernameHint;
@@ -82,4 +86,10 @@ class LoginMessages with ChangeNotifier {
 
   /// The success message to show after signing up
   final String signUpSuccess;
+
+  /// Hint text for first name
+  final String firstNameHint;
+
+  /// Hint text for family name
+  final String familyNameHint;
 }

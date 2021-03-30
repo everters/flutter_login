@@ -16,6 +16,7 @@ import '../constants.dart';
 import '../providers/auth.dart';
 import '../providers/login_messages.dart';
 import '../models/login_data.dart';
+import '../models/signup_data.dart';
 import '../dart_helper.dart';
 import '../matrix.dart';
 import '../paddings.dart';
@@ -508,9 +509,11 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
         password: auth.password,
       ));
     } else {
-      error = await auth.onSignup(LoginData(
+      error = await auth.onSignup(SignupData(
         name: auth.email,
         password: auth.password,
+        firstName: auth.firstName,
+        familyName: auth.familyName
       ));
     }
 
@@ -813,7 +816,9 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
                 child: Column(
                   children: <Widget>[
                     _buildConfirmPasswordField(textFieldWidth, messages, auth),
+                    SizedBox(height: 20),
                     _buildFirstNameField(textFieldWidth, messages, auth),
+                    SizedBox(height: 20),
                     _buildFamilyNameField(textFieldWidth, messages, auth),
                   ]
                 )

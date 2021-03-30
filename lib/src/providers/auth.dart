@@ -6,7 +6,7 @@ import '../models/login_data.dart';
 enum AuthMode { Signup, Login }
 
 /// The result is an error message, callback successes if message is null
-typedef AuthCallback = Future<String> Function(LoginData);
+typedef AuthCallback = Future<String> Function(dynamic);
 
 /// The result is an error message, callback successes if message is null
 typedef ProviderAuthCallback = Future<String> Function();

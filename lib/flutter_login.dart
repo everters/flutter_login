@@ -579,10 +579,14 @@ class _FlutterLoginState extends State<FlutterLogin>
     Widget footerWidget = SizedBox();
     if (widget.footer != null) {
       footerWidget = Padding(
-        padding: EdgeInsets.only(bottom: 10),
-        child: Text(
-          widget.footer,
-          style: loginTheme.footerTextStyle,
+        padding: EdgeInsets.only(bottom: 10, top: 10),
+        child: Container(
+          width: MediaQuery.of(context).size.width - 150 ,
+            child: Text(
+              widget.footer,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
         ),
       );
     }
@@ -619,29 +623,26 @@ class _FlutterLoginState extends State<FlutterLogin>
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
-                    Positioned(
-                      child: AuthCard(
-                        key: authCardKey,
-                        padding: EdgeInsets.only(top: cardTopPosition),
-                        loadingController: _loadingController,
-                        emailValidator: emailValidator,
-                        passwordValidator: passwordValidator,
-                        onSubmit: _reverseHeaderAnimation,
-                        onSubmitCompleted: widget.onSubmitAnimationCompleted,
-                        hideSignUpButton: widget.hideSignUpButton,
-                        hideForgotPasswordButton:
-                            widget.hideForgotPasswordButton,
-                        loginAfterSignUp: widget.loginAfterSignUp,
-                      ),
+                      Positioned(
+                        child: AuthCard(
+                          key: authCardKey,
+                          padding: EdgeInsets.only(top: cardTopPosition),
+                          loadingController: _loadingController,
+                          emailValidator: emailValidator,
+                          passwordValidator: passwordValidator,
+                          onSubmit: _reverseHeaderAnimation,
+                          onSubmitCompleted: widget.onSubmitAnimationCompleted,
+                          hideSignUpButton: widget.hideSignUpButton,
+                          hideForgotPasswordButton:
+                              widget.hideForgotPasswordButton,
+                          loginAfterSignUp: widget.loginAfterSignUp,
+                          footer: footerWidget
+                        ),
                     ),
                     Positioned(
                       top: cardTopPosition - headerHeight - headerMargin,
                       child: _buildHeader(headerHeight, loginTheme),
-                    ),
-                    Positioned.fill(
-                        child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: footerWidget))
+                    )
                   ],
                 ),
               ),
